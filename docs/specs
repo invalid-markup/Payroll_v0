@@ -1,0 +1,20 @@
+# Additional Specifications & Clarifications
+
+This document tracks specific design decisions and clarifications supplementary to `00_SPEC.md`.
+
+## Clarified Decisions (As of MVP Planning)
+
+1. **Statutory Configuration (Module 7):**
+   - Focus is currently on solidifying the foundation and planning. We will leverage Laravel Boost tools. A full UI for managing tax bands will be addressed when we reach that stage.
+
+2. **Bank Export Formats (Module 14):**
+   - Target a **generic CSV format** for the MVP. (Example: CRDB requires CSV).
+
+3. **Leave to Payroll Integration (Module 8):**
+   - Integration specifically involves handling and deducting **Unpaid Leave**.
+
+4. **Attendance Data Entry (Module 9):**
+   - HR will input attendance and overtime data **manually per employee**.
+
+5. **Insufficient Funds for Loan Deductions (Module 10):**
+   - If an employee's net pay cannot cover a loan deduction installment, the system must **flag the employee with an error during the "Preview Payroll" stage**.
