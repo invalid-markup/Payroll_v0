@@ -93,4 +93,9 @@ class Employee extends Model
     {
         return $this->hasMany(OvertimeRecord::class);
     }
+
+    public function currentSalary()
+    {
+        return $this->hasOne(SalaryHistory::class)->latestOfMany('effective_from');
+    }
 }

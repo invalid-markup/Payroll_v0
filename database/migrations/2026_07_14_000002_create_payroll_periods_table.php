@@ -21,8 +21,9 @@ return new class extends Migration
             $table->unique(['company_id', 'start_date', 'end_date'], 'period_unique');
         });
 
-        // Add CHECK constraint: end_date >= start_date
-        DB::statement('ALTER TABLE payroll_periods ADD CONSTRAINT chk_end_gte_start CHECK (end_date >= start_date)');
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement('ALTER TABLE payroll_periods ADD CONSTRAINT chk_end_gte_start CHECK (end_date >= start_date)');
+        }
     }
 
     public function down(): void

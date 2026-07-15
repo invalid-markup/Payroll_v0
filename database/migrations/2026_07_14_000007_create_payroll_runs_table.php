@@ -20,22 +20,30 @@ return new class extends Migration
             // Maker/Checker identities — permanently bound (DB spec §2.6)
             $table->foreignUuid('submitted_by_user_id')->nullable()->constrained('users')->restrictOnDelete();
             $table->foreignUuid('approved_by_user_id')->nullable()->constrained('users')->restrictOnDelete();
-            $table->foreignUuid('original_run_id')->nullable()->constrained('payroll_runs')->restrictOnDelete();
-            $table->foreignUuid('reversed_by_run_id')->nullable()->constrained('payroll_runs')->restrictOnDelete();
+            // Self-referencing FKs added below after table creation (PG requires PK to exist first).
+            $table->uuid('original_run_id')->nullable();
+            $table->uuid('reversed_by_run_id')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();
         });
 
-        // Business Rules §9.3: Maker ≠ Checker must be enforced at the DB transaction level.
-        DB::statement('
-            ALTER TABLE payroll_runs
-            ADD CONSTRAINT chk_maker_not_checker
-            CHECK (
-                submitted_by_user_id IS NULL
-                OR approved_by_user_id IS NULL
-                OR submitted_by_user_id != approved_by_user_id
-            )
-        ');
+        // Self-referencing FKs must be added after table creation so the PK exists.
+        Schema::table('payroll_runs', function (Blueprint $table) {
+            $table->foreign('original_run_id')->references('id')->on('payroll_runs')->restrictOnDelete();
+            $table->foreign('reversed_by_run_id')->references('id')->on('payroll_runs')->restrictOnDelete();
+        });
+
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement('
+                ALTER TABLE payroll_runs
+                ADD CONSTRAINT chk_maker_not_checker
+                CHECK (
+                    submitted_by_user_id IS NULL
+                    OR approved_by_user_id IS NULL
+                    OR submitted_by_user_id != approved_by_user_id
+                )
+            ');
+        }
     }
 
     public function down(): void

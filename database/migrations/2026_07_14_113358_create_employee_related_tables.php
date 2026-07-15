@@ -43,9 +43,10 @@ return new class extends Migration
             // CREATE UNIQUE INDEX uq_employee_scheme ON employee_scheme_enrollments (employee_id, scheme_code, membership_number) WHERE deleted_at IS NULL;
         });
 
-        // Execute raw SQL for the partial unique constraints because Laravel Blueprint doesn't natively support partial unique indices perfectly across all DBMS in older versions, though it does in newer. Let's use raw for safety.
-        DB::statement('CREATE UNIQUE INDEX employee_bank_details_is_primary_unique ON employee_bank_details (employee_id) WHERE is_primary = true AND deleted_at IS NULL;');
-        DB::statement('CREATE UNIQUE INDEX uq_employee_scheme ON employee_scheme_enrollments (employee_id, scheme_code, membership_number) WHERE deleted_at IS NULL;');
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement('CREATE UNIQUE INDEX employee_bank_details_is_primary_unique ON employee_bank_details (employee_id) WHERE is_primary = true AND deleted_at IS NULL;');
+            DB::statement('CREATE UNIQUE INDEX uq_employee_scheme ON employee_scheme_enrollments (employee_id, scheme_code, membership_number) WHERE deleted_at IS NULL;');
+        }
     }
 
     public function down(): void

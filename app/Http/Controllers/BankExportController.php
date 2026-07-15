@@ -8,7 +8,6 @@ use App\Models\PayrollRunResult;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Gate;
 
 class BankExportController extends Controller
 {

@@ -58,7 +58,7 @@ class AuthController extends Controller
     public function switchCompany(Request $request)
     {
         $request->validate([
-            'company_id' => 'required|uuid|exists:company_profile,id',
+            'company_id' => 'required|uuid|exists:company_profile,company_id',
         ]);
 
         $user = $request->user();

@@ -22,4 +22,14 @@ class LoanInstallment extends Model
         'outstanding_balance_before' => 'decimal:4',
         'outstanding_balance_after' => 'decimal:4',
     ];
+
+    public function loan()
+    {
+        return $this->belongsTo(Loan::class);
+    }
+
+    public function payrollPeriod()
+    {
+        return $this->belongsTo(PayrollPeriod::class);
+    }
 }
